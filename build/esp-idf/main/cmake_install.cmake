@@ -1,4 +1,4 @@
-# Install script for directory: /home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/main
+# Install script for directory: /home/eon/OpenSwarmFW/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

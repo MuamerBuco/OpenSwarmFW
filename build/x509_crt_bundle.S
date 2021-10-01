@@ -1,4 +1,4 @@
-/* * Data converted from /home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from /home/eon/OpenSwarmFW/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

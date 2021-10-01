@@ -1,4 +1,4 @@
-# Install script for directory: /home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/protocol_examples_common
+# Install script for directory: /home/eon/OpenSwarmFW/protocol_examples_common
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

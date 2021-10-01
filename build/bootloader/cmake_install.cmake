@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/bootloader/esp-idf/cmake_install.cmake")
+  include("/home/eon/OpenSwarmFW/build/bootloader/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/eon/OpenSwarmFW/build/bootloader/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

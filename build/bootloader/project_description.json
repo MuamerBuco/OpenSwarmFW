@@ -1,8 +1,8 @@
 {
     "project_name":       "bootloader",
     "project_path":       "/home/eon/esp/esp-idf/components/bootloader/subproject",
-    "build_dir":          "/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/bootloader",
-    "config_file":        "/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/sdkconfig",
+    "build_dir":          "/home/eon/OpenSwarmFW/build/bootloader",
+    "config_file":        "/home/eon/OpenSwarmFW/sdkconfig",
     "config_defaults":    "",
     "app_elf":            "bootloader.elf",
     "app_bin":            "bootloader.bin",

@@ -12,5 +12,9 @@
 #include "lwip/sockets.h"
 #include "lwip/sys.h"
 
+#define MAX_MSG_SIZE 12
+
 void udp_server_task(void *pvParameters);
-uint8_t rx_buffer[9];
+QueueHandle_t xQueue;
+
+// SemaphoreHandle_t xSemaphore = NULL;

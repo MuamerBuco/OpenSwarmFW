@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "palettes.h": "c",
+        "ledc.h": "c",
+        "freertos.h": "c",
+        "udpsocket.h": "c",
+        "stdatomic.h": "c"
+    }
+}

@@ -1,27 +1,26 @@
-/* BSD Socket API Example
-
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
-
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
 #include <string.h>
 #include <sys/param.h>
-#include "UDPsocket.h"
 #include <lwip/netdb.h>
+
+#include "UDPsocket.h"
 
 #define PORT 3333
 
 static const char *TAG = "example";
+uint8_t rx_buffer[MAX_MSG_SIZE];
 
 void udp_server_task(void *pvParameters)
 {
-    //uint8_t rx_buffer[8];
     char addr_str[128];
     int addr_family = (int)pvParameters;
     int ip_protocol = 0;
     struct sockaddr_in6 dest_addr;
+    xQueue = xQueueCreate( MAX_MSG_SIZE, sizeof( uint32_t ) );
+
+    if( xQueue == 0 )
+    {
+        // TODO deal with Failed to create the queue.
+    }
 
     while (1) {
 
@@ -61,17 +60,24 @@ void udp_server_task(void *pvParameters)
         }
         ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 
+        memset(rx_buffer, 0, sizeof rx_buffer);
+        rx_buffer[0] = 1; // set parse byte
+        rx_buffer[9] = 4; // set LED program to CONNECTED_SUCCESSFULY
+
+        xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 0 );
+
         while (1) {
 
+           
             //ESP_LOGI(TAG, "Waiting for data");
             struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
             socklen_t socklen = sizeof(source_addr);
             int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer), 0, (struct sockaddr *)&source_addr, &socklen);
             
-            printf("Buffer state: \n");
-            for(int i = 0; i < sizeof(rx_buffer); i++){
-                printf(" %d ", rx_buffer[i]);
-            }
+            // printf("Buffer state: \n");
+            // for(int i = 0; i < sizeof(rx_buffer); i++){
+            //     printf(" %d ", rx_buffer[i]);
+            // }
             
             // Error occurred during receiving
             if (len < 0) {
@@ -86,6 +92,9 @@ void udp_server_task(void *pvParameters)
                 } else if (source_addr.sin6_family == PF_INET6) {
                     inet6_ntoa_r(source_addr.sin6_addr, addr_str, sizeof(addr_str) - 1);
                 }
+
+                // Place the new buffer in queue
+                xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 0 );
 
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
                 //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);

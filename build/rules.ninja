@@ -6,7 +6,7 @@
 # It is included in the main 'build.ninja'.
 
 # =============================================================================
-# Project: ledc
+# Project: openSwarm
 # Configuration: 
 # =============================================================================
 # =============================================================================
@@ -22,7 +22,7 @@ rule CUSTOM_COMMAND
 #############################################
 # Rule for compiling C files.
 
-rule C_COMPILER__ledc.2eelf
+rule C_COMPILER__openSwarm.2eelf
   depfile = $DEP_FILE
   deps = gcc
   command = /home/eon/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
@@ -32,7 +32,7 @@ rule C_COMPILER__ledc.2eelf
 #############################################
 # Rule for linking CXX executable.
 
-rule CXX_EXECUTABLE_LINKER__ledc.2eelf
+rule CXX_EXECUTABLE_LINKER__openSwarm.2eelf
   command = $PRE_LINK && /home/eon/.espressif/tools/xtensa-esp32-elf/esp-2020r3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-g++  $FLAGS  $LINK_FLAGS $in  -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking CXX executable $TARGET_FILE
   restat = $RESTAT
@@ -1441,7 +1441,7 @@ rule CXX_STATIC_LIBRARY_LINKER____idf_protocol_examples_common
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /usr/bin/cmake -S/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc -B/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build
+  command = /usr/bin/cmake -S/home/eon/OpenSwarmFW -B/home/eon/OpenSwarmFW/build
   description = Re-running CMake...
   generator = 1
 

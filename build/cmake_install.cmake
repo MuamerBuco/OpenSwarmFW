@@ -1,4 +1,4 @@
-# Install script for directory: /home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc
+# Install script for directory: /home/eon/OpenSwarmFW
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/esp-idf/cmake_install.cmake")
+  include("/home/eon/OpenSwarmFW/build/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -46,5 +46,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/eon/Thesis/ThesisEmbedded/ESP32/TestFirmware/ThesisRobot/ledc/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/eon/OpenSwarmFW/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
