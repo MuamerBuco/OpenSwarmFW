@@ -11,9 +11,9 @@
 
 typedef enum command_modes {
     STANDARD_MODE = 1,
-    CUSTOM_MOVE = 2,
-    CUSTOM_LED = 3,
-    CUSTOM_BUCKET = 4
+    CUSTOM_MOVE,
+    CUSTOM_LED,
+    CUSTOM_BUCKET
 
 } command_modes;
 
