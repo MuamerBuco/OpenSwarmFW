@@ -20,6 +20,16 @@ rmt_channel_t Channel = 0; //remote channel
 rmt_item32_t * Items;
 pixel_t * Pixels;
 
+typedef enum CustomLEDprograms {
+	SET_SINGLE_PIXEL = 1,
+	SET_ALL_PIXELS = 2,
+	RAINBOW = 3,
+	THEATER_CHASE = 4,
+	FADE_IN_OUT = 5,
+	BLINK_ONCE = 6,
+	BLINK_N_TIMES = 7
+} CustomLEDprograms;
+
 /**
  * A NeoPixel is defined by 3 bytes ... red, green and blue.
  * Each byte is composed of 8 bits ... therefore a NeoPixel is 24 bits of data.
@@ -137,6 +147,8 @@ void LEDRing_fullShow(uint8_t red, uint8_t green, uint8_t blue)
 	LEDRing_showPixels();
 }
 
+void LEDRing_blink(uint8_t red, uint8_t green, uint8_t blue, uint8_t number_of_blinks);
+
 // set direct custom commands for LEDs
 uint8_t parseCustomLED(uint8_t buffer[6])
 {
@@ -149,20 +161,32 @@ uint8_t parseCustomLED(uint8_t buffer[6])
 
 	switch( switch_case )
 	{
-		case 1 :
+		case SET_SINGLE_PIXEL :
 			LEDRing_setPixels(index, red, green, blue);
 			return 1;
+
+		case SET_ALL_PIXELS :
+			LEDRing_fullShow(red, green, blue);
+			return 1;
 		
-		case 2 :
+		case RAINBOW :
 			rainbowCycle(ms_delay);
 			return 1;
 
-		case 3 :
+		case THEATER_CHASE :
 			theaterChaseRainbow(ms_delay);
 			return 1;
 
-		case 4 :
+		case FADE_IN_OUT :
 			FadeInOut(red, green, blue);
+			return 1;
+
+		case BLINK_ONCE :
+			LEDRing_blink(red, green, blue, 1);
+			return 1;
+
+		case BLINK_N_TIMES :
+			LEDRing_blink(red, green, blue, index);
 			return 1;
 	}
 

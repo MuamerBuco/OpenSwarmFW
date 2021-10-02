@@ -81,8 +81,12 @@ uint8_t parse_incoming()
                 parseCustomLED(LEDstate);
                 return 1;
 
-            case CUSTOM_BUCKET :
+            case CUSTOM_BUCKET : ;
+                uint8_t bucketState[2];
+                bucketState[0] = recv_msg[1];
+                bucketState[1] = recv_msg[2];
                 // set custom bucket state with speed
+                runBucketServos(bucketState);
                 return 1;
         }
 
