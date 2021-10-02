@@ -320,7 +320,7 @@ uint8_t LEDRing_programParsing(LEDRing_programs program)
 			return 1;
 
 		case CONNECTED_SUCCESSFULY :
-			LEDRing_blink(255, 0, 255, 3);
+			LEDRing_blink(255, 0, 255, 3); // blink purple
 			return 1;
 		
 		case ROBOT_SHUTDOWN :

@@ -126,6 +126,7 @@ void app_main(void)
             alarmCounter += run_delay_ms;// update -time passed- counter
         }
 
+        // if no msg is recived for STOP_AFTER_MS ms, stop everything
         if(alarmCounter >= STOP_AFTER_MS)
         {
             stopRobot();
