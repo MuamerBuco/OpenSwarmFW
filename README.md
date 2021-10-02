@@ -1,8 +1,10 @@
 # OpenSwarm Firmware v1.0
 
-## Still Under Construction....
-
 OpenSwarm Firmware for the ESP32 development board
+
+
+# Still Under Construction....
+
 
 ## Current Features
 
