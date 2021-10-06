@@ -7,7 +7,7 @@
 #include "BatteryMonitoring.h"
 #include "MotorControl.h"
 
-#define STOP_AFTER_MS 3000
+#define STOP_AFTER_MS 50
 
 typedef enum command_modes {
     STANDARD_MODE = 1,
@@ -44,8 +44,8 @@ void stopRobot()
     memset(speeds_and_directions, 0, sizeof speeds_and_directions);
 
     RunMotors(speeds_and_directions);
-    runBucketServos(bucketSet);
-    LEDRing_programParsing(LEDprogram);
+    //runBucketServos(bucketSet);
+    //LEDRing_programParsing(LEDprogram);
 }
 
 uint8_t parse_incoming()
@@ -55,6 +55,10 @@ uint8_t parse_incoming()
     // check if theres anything on the queue, if not wait 10 ticks
     if( xQueueReceive( xQueue, &( recv_msg ), ( TickType_t ) 10 ) )
     {
+        printf("Buffer state in parse: \n");
+            for(int i = 0; i < sizeof(recv_msg); i++){
+                printf(" %d ", recv_msg[i]);
+            }
         switch( recv_msg[0] )
         {
             case STANDARD_MODE :
@@ -70,6 +74,7 @@ uint8_t parse_incoming()
                 return 1;
 
             case CUSTOM_MOVE :
+                printf("Got to custom move\n");
                 memcpy(&speeds_and_directions[0], &recv_msg[1], 8);
                 RunMotors(speeds_and_directions);
                 return 1;
@@ -109,9 +114,9 @@ void app_main(void)
     xTaskCreate(udp_server_task, "udp_server", 4096, (void*)AF_INET, 5, NULL);
 
     // TODO set esp_err_t returns and check with ESP ERROR
-    ESP_ERROR_CHECK(BucketControl_initialize());
+    //ESP_ERROR_CHECK(BucketControl_initialize());
     ESP_ERROR_CHECK(MotorControl_initialize());
-    ESP_ERROR_CHECK(LEDRing_initialize(0, 17, 24));
+    //ESP_ERROR_CHECK(LEDRing_initialize(0, 17, 24));
 
     uint32_t alarmCounter = 0;
     uint8_t run_delay_ms = 3;
@@ -120,11 +125,14 @@ void app_main(void)
     {
         if( parse_incoming() )
         {
+            printf("Parsed incoming\n");
             alarmCounter = 0;// reset watchdog timer for shutdown behavior
         }
         else {
             alarmCounter += run_delay_ms;// update -time passed- counter
         }
+
+        printf("The alarm counter is: %d \n", alarmCounter);
 
         // if no msg is recived for STOP_AFTER_MS ms, stop everything
         if(alarmCounter >= STOP_AFTER_MS)

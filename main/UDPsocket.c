@@ -6,7 +6,7 @@
 
 #define PORT 3333
 
-static const char *TAG = "example";
+static const char *TAG = "Robot";
 uint8_t rx_buffer[MAX_MSG_SIZE];
 
 void udp_server_task(void *pvParameters)
@@ -15,7 +15,7 @@ void udp_server_task(void *pvParameters)
     int addr_family = (int)pvParameters;
     int ip_protocol = 0;
     struct sockaddr_in6 dest_addr;
-    xQueue = xQueueCreate( MAX_MSG_SIZE, sizeof( uint32_t ) );
+    xQueue = xQueueCreate( 8, sizeof( rx_buffer ) );
 
     if( xQueue == 0 )
     {
@@ -61,8 +61,8 @@ void udp_server_task(void *pvParameters)
         ESP_LOGI(TAG, "Socket bound, port %d", PORT);
 
         memset(rx_buffer, 0, sizeof rx_buffer);
-        rx_buffer[0] = 1; // set parse byte
-        rx_buffer[9] = 4; // set LED program to CONNECTED_SUCCESSFULY
+        // rx_buffer[0] = 1; // set parse byte
+        // rx_buffer[9] = 4; // set LED program to CONNECTED_SUCCESSFULY
 
         xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 0 );
 
@@ -74,10 +74,10 @@ void udp_server_task(void *pvParameters)
             socklen_t socklen = sizeof(source_addr);
             int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer), 0, (struct sockaddr *)&source_addr, &socklen);
             
-            // printf("Buffer state: \n");
-            // for(int i = 0; i < sizeof(rx_buffer); i++){
-            //     printf(" %d ", rx_buffer[i]);
-            // }
+            printf("Buffer state: \n");
+            for(int i = 0; i < sizeof(rx_buffer); i++){
+                printf(" %d ", rx_buffer[i]);
+            }
             
             // Error occurred during receiving
             if (len < 0) {
@@ -92,13 +92,14 @@ void udp_server_task(void *pvParameters)
                 } else if (source_addr.sin6_family == PF_INET6) {
                     inet6_ntoa_r(source_addr.sin6_addr, addr_str, sizeof(addr_str) - 1);
                 }
-
-                // Place the new buffer in queue
-                xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 0 );
-
+                if(len > 2){
+                    // Place the new buffer in queue
+                    xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 2 );
+                }
+                
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string...
-                //ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
-                //ESP_LOGI(TAG, "%s", rx_buffer);
+                ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
+                ESP_LOGI(TAG, "%s", rx_buffer);
 
                 int err = sendto(sock, rx_buffer, len, 0, (struct sockaddr *)&source_addr, sizeof(source_addr));
                 if (err < 0) {

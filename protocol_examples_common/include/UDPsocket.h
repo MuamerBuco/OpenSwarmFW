@@ -16,5 +16,3 @@
 
 void udp_server_task(void *pvParameters);
 QueueHandle_t xQueue;
-
-// SemaphoreHandle_t xSemaphore = NULL;

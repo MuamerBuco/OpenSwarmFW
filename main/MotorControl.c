@@ -122,8 +122,18 @@ void RunSingleMotor(uint8_t motor_id, uint8_t motor_speed, uint8_t motor_directi
     }
 }
 
+void PrintBuffer2(uint8_t *rx_buffer)
+{
+    printf("Buffer contents: \n");
+    for(uint8_t i = 0; i < 8; i++){
+        printf("%d ", rx_buffer[i]);
+    }
+    printf("\n");
+}
+
 void RunMotors(uint8_t motor_params[8])
 {
+    PrintBuffer2(motor_params);
     RunSingleMotor(0, motor_params[0], motor_params[1]);
     RunSingleMotor(1, motor_params[2], motor_params[3]);
     RunSingleMotor(2, motor_params[4], motor_params[5]);
