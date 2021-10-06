@@ -3,7 +3,7 @@
 OpenSwarm Firmware for the ESP32 development board
 
 
-# Still Under Construction....
+# Still Under Development....
 
 
 ## Current Features
