@@ -15,7 +15,7 @@ void udp_server_task(void *pvParameters)
     int addr_family = (int)pvParameters;
     int ip_protocol = 0;
     struct sockaddr_in6 dest_addr;
-    xQueue = xQueueCreate( 8, sizeof( rx_buffer ) );
+    xQueue = xQueueCreate( 2, sizeof( rx_buffer ) );
 
     if( xQueue == 0 )
     {
@@ -92,6 +92,7 @@ void udp_server_task(void *pvParameters)
                 } else if (source_addr.sin6_family == PF_INET6) {
                     inet6_ntoa_r(source_addr.sin6_addr, addr_str, sizeof(addr_str) - 1);
                 }
+
                 if(len > 2){
                     // Place the new buffer in queue
                     xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 2 );

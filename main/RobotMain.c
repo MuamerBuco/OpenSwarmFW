@@ -53,12 +53,8 @@ uint8_t parse_incoming()
     uint8_t recv_msg[12];
 
     // check if theres anything on the queue, if not wait 10 ticks
-    if( xQueueReceive( xQueue, &( recv_msg ), ( TickType_t ) 10 ) )
+    if( xQueueReceive( xQueue, &( recv_msg ), ( TickType_t ) 5 ) )
     {
-        printf("Buffer state in parse: \n");
-            for(int i = 0; i < sizeof(recv_msg); i++){
-                printf(" %d ", recv_msg[i]);
-            }
         switch( recv_msg[0] )
         {
             case STANDARD_MODE :
@@ -74,7 +70,7 @@ uint8_t parse_incoming()
                 return 1;
 
             case CUSTOM_MOVE :
-                printf("Got to custom move\n");
+                // printf("Got to custom move\n");
                 memcpy(&speeds_and_directions[0], &recv_msg[1], 8);
                 RunMotors(speeds_and_directions);
                 return 1;
@@ -119,20 +115,20 @@ void app_main(void)
     //ESP_ERROR_CHECK(LEDRing_initialize(0, 17, 24));
 
     uint32_t alarmCounter = 0;
-    uint8_t run_delay_ms = 3;
+    uint8_t run_delay = 3;
 
     while (1) 
     {
         if( parse_incoming() )
         {
-            printf("Parsed incoming\n");
+            // printf("Parsed incoming\n");
             alarmCounter = 0;// reset watchdog timer for shutdown behavior
         }
         else {
-            alarmCounter += run_delay_ms;// update -time passed- counter
+            alarmCounter += run_delay;// update -time passed- counter
         }
 
-        printf("The alarm counter is: %d \n", alarmCounter);
+        // printf("The alarm counter is: %d \n", alarmCounter);
 
         // if no msg is recived for STOP_AFTER_MS ms, stop everything
         if(alarmCounter >= STOP_AFTER_MS)
@@ -140,6 +136,6 @@ void app_main(void)
             stopRobot();
         }
 
-        msDelay(run_delay_ms);
+        //msDelay(run_delay_ms);
     }
 }
