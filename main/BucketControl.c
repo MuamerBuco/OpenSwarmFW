@@ -26,14 +26,14 @@ esp_err_t BucketControl_initialize()
 {
     esp_err_t err_state;
 
-    //configure high speed PWM timer
+    //configure low speed PWM timer
     timer_conf.duty_resolution = LEDC_TIMER_15_BIT;
     timer_conf.freq_hz = 50;
     timer_conf.speed_mode = LEDC_LOW_SPEED_MODE;
     timer_conf.timer_num = LEDC_TIMER_1;
     err_state = ledc_timer_config(&timer_conf);
     
-    //configure high speed PWM channel 0
+    //configure low speed PWM channel 0
     ledc_conf.channel = LEDC_CHANNEL_0;
     ledc_conf.duty = 0;
     ledc_conf.gpio_num = GPIO_SERVO_0;
@@ -42,7 +42,7 @@ esp_err_t BucketControl_initialize()
     ledc_conf.timer_sel = LEDC_TIMER_1;
     err_state = ledc_channel_config(&ledc_conf);
 
-     //configure high speed PWM channel 1
+    //configure low speed PWM channel 1
     ledc_conf.channel = LEDC_CHANNEL_1;
     ledc_conf.duty = 0;
     ledc_conf.gpio_num = GPIO_SERVO_1;
@@ -55,7 +55,7 @@ esp_err_t BucketControl_initialize()
 }
 
 // takes in bucket (extension and tilt) servo parameters in degrees and actuates the bucket
-void runBucketServos(uint8_t bucket_parameters[2])
+int runBucketServos(uint8_t bucket_parameters[2])
 {
     uint32_t timer_duty;
 
@@ -64,7 +64,7 @@ void runBucketServos(uint8_t bucket_parameters[2])
         current_extension = bucket_parameters[1];
     } else {
         printf("Bucket parameters out of scope\n");
-        exit(0);
+        return 0;
     }
 
     timer_duty = calculate_duty(bucket_parameters[0]);
@@ -74,6 +74,8 @@ void runBucketServos(uint8_t bucket_parameters[2])
     timer_duty = calculate_duty(bucket_parameters[1]);
     ledc_set_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1, timer_duty);
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_1);
+
+    return 1;
 }
 
 ///// TESTING

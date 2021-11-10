@@ -10,10 +10,12 @@
 
 #define MAX_TILT 100
 #define MAX_EXTENSION 100
+#define MIN_TILT 100
+#define MIN_EXTENSION 100
 
-#define GPIO_SERVO_0 24
+#define GPIO_SERVO_0 33
 #define GPIO_SERVO_1 25
 
 esp_err_t BucketControl_initialize();
-void runBucketServos(uint8_t bucket_parameters[2]);
+int runBucketServos(uint8_t bucket_parameters[2]);
 void test_function();

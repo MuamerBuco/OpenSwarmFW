@@ -20,16 +20,6 @@ rmt_channel_t Channel = 0; //remote channel
 rmt_item32_t * Items;
 pixel_t * Pixels;
 
-typedef enum CustomLEDprograms {
-	SET_SINGLE_PIXEL = 1,
-	SET_ALL_PIXELS = 2,
-	RAINBOW = 3,
-	THEATER_CHASE = 4,
-	FADE_IN_OUT = 5,
-	BLINK_ONCE = 6,
-	BLINK_N_TIMES = 7
-} CustomLEDprograms;
-
 /**
  * A NeoPixel is defined by 3 bytes ... red, green and blue.
  * Each byte is composed of 8 bits ... therefore a NeoPixel is 24 bits of data.
@@ -127,24 +117,34 @@ void LEDRing_showPixels()
 
 void LEDRing_clear() 
 {
-	uint16_t i;
-	
-	for (i=0; i<PixelCount; i++) 
-	{
-		Pixels[i].red = 0;
-		Pixels[i].green = 0;
-		Pixels[i].blue = 0;
-	}
+	LEDRing_fullShow( 0, 0, 0);
 } // clear
 
 // Turns the full strip to given color with no effects
 void LEDRing_fullShow(uint8_t red, uint8_t green, uint8_t blue)
 {
+	// printf("In LEDRing full show, red %d, green %d, and blue %d\n", red, green, blue);
+
 	for(uint8_t pixNum =0; pixNum < PixelCount; pixNum++)
 	{
 		LEDRing_setPixels(pixNum, green, blue, red); //the WS2812 strip we have shows colors as GRB
 	}
+	
 	LEDRing_showPixels();
+}
+
+// Turns the full strip to given color with no effects
+void LEDRing_fullShow_time(uint8_t red, uint8_t green, uint8_t blue, int time_in_ms)
+{
+	// printf("In LEDRing full show, red %d, green %d, and blue %d\n", red, green, blue);
+
+	for(uint8_t pixNum =0; pixNum < PixelCount; pixNum++)
+	{
+		LEDRing_setPixels(pixNum, green, blue, red); //the WS2812 strip we have shows colors as GRB
+	}
+	
+	LEDRing_showPixels();
+	vTaskDelay(time_in_ms / portTICK_PERIOD_MS);
 }
 
 void LEDRing_blink(uint8_t red, uint8_t green, uint8_t blue, uint8_t number_of_blinks);
@@ -152,6 +152,8 @@ void LEDRing_blink(uint8_t red, uint8_t green, uint8_t blue, uint8_t number_of_b
 // set direct custom commands for LEDs
 uint8_t parseCustomLED(uint8_t buffer[6])
 {
+	LEDRing_ready = 0;
+
 	uint8_t switch_case = buffer[0];
 	uint8_t index = buffer[1];
 	uint8_t red = buffer[2];
@@ -159,37 +161,60 @@ uint8_t parseCustomLED(uint8_t buffer[6])
 	uint8_t blue = buffer[4];
 	uint8_t ms_delay = buffer[5];
 
+	printf("The parsed values: \n");
+	printf("%d\n", switch_case);
+	printf("%d\n", index);
+	printf("%d\n", red);
+	printf("%d\n", green);
+	printf("%d\n", blue);
+	printf("%d\n", ms_delay);
+
 	switch( switch_case )
 	{
 		case SET_SINGLE_PIXEL :
-			LEDRing_setPixels(index, red, green, blue);
+			LEDRing_setPixels(index, green, blue, red);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case SET_ALL_PIXELS :
 			LEDRing_fullShow(red, green, blue);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 		
 		case RAINBOW :
 			rainbowCycle(ms_delay);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case THEATER_CHASE :
 			theaterChaseRainbow(ms_delay);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case FADE_IN_OUT :
 			FadeInOut(red, green, blue);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case BLINK_ONCE :
 			LEDRing_blink(red, green, blue, 1);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case BLINK_N_TIMES :
 			LEDRing_blink(red, green, blue, index);
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 	}
-
+	
+	LEDRing_ready = 1;
 	return 0;
 }
 
@@ -255,7 +280,7 @@ void theaterChaseRainbow(int SpeedDelay)
         
 		for (int i=0; i < PixelCount; i=i+3) 
 		{
-      			LEDRing_setPixels(i+q, 0,0,0);        //turn every third pixel off
+			LEDRing_setPixels(i+q, 0,0,0);        //turn every third pixel off
         }
     }
   }
@@ -263,79 +288,106 @@ void theaterChaseRainbow(int SpeedDelay)
 
 void LEDRing_blink(uint8_t red, uint8_t green, uint8_t blue, uint8_t number_of_blinks)
 {
-	uint8_t r = red, g = green, b = blue;
-
 	for(int lap = 0; lap < number_of_blinks; lap++)
 	{
 		LEDRing_fullShow(red, green, blue);
-		
-		for(int i = 0; i < 256; i++)
-		{
-			if(red > 0) red -= 1;
-			if(green > 0) green -= 1;
-			if(blue > 0) blue -= 1;
+		vTaskDelay(700 / portTICK_PERIOD_MS);
 
-			LEDRing_fullShow(red, green, blue);
-			vTaskDelay(20 / portTICK_PERIOD_MS); 
-		}
-
-		red = r; green = g; blue = b;
+		LEDRing_fullShow(0, 0, 0);
+		vTaskDelay(700 / portTICK_PERIOD_MS);
 	} 
 }
 
+// fades in and out at speed(100 is appropriate)
 void FadeInOut(uint8_t red, uint8_t green, uint8_t blue)
 {
-  float r, g, b;
-  
-  for(int k = 0; k < 256; k=k+1) 
-  {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    LEDRing_fullShow(r,g,b);
-	vTaskDelay(20 / portTICK_PERIOD_MS);
-  }
+	int increment_size = 100;
+	int speed = 20;
+	printf("Started fade\n");
+	uint8_t r = 0, g = 0, b = 0;
 
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
+	float r_iter = red/increment_size, g_iter = green/increment_size, b_iter = blue/increment_size;
+	
+	for(int k = 0; k < increment_size; k++) 
+	{
+		r += r_iter;
+		g += g_iter;
+		b += b_iter;
 
-  for(int k = 255; k >= 0; k=k-2) 
-  {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    LEDRing_fullShow(r,g,b);
+		printf("The red: %d\n", r);
+		printf("The green: %d\n", g);
+		printf("The blue: %d\n", b);
 
-	vTaskDelay(20 / portTICK_PERIOD_MS); 
-  }
+		LEDRing_fullShow(r,g,b);
+		vTaskDelay(speed / portTICK_PERIOD_MS);
+	}
+
+	vTaskDelay(500 / portTICK_PERIOD_MS);
+
+	for(int k = 0; k < increment_size; k++) 
+	{
+		r -= r_iter;
+		g -= g_iter;
+		b -= b_iter;
+
+		printf("The red: %d\n", r);
+		printf("The green: %d\n", g);
+		printf("The blue: %d\n", b);
+		
+		LEDRing_fullShow(r,g,b);
+		vTaskDelay(speed / portTICK_PERIOD_MS);
+	}
+
+	printf("Ended fade\n");
 }
 
 //////////// PROGRAM PARSING
 
 uint8_t LEDRing_programParsing(LEDRing_programs program)
 {
+	LEDRing_ready = 0;
+
 	switch(program) 
 	{
 		case ROBOT_READY :
-			LEDRing_fullShow(0, 255, 0); // just lights up green
+			LEDRing_fullShow_time(0, 255, 0, 1000); // just lights up green
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 
 		case CONNECTED_SUCCESSFULY :
 			LEDRing_blink(255, 0, 255, 3); // blink purple
+			LEDRing_clear();
+			LEDRing_ready = 1;
 			return 1;
 		
 		case ROBOT_SHUTDOWN :
 			LEDRing_clear(); // turn all LEDs off
+			LEDRing_ready = 1;
 			return 1;
 
 		case BATTERY_EMPTY :
 			LEDRing_fullShow(255, 0, 0);
+			LEDRing_clear(); 
+			LEDRing_ready = 1;
 			return 1;
 
 		case REACHED_ENDPOINT :
-			LEDRing_fullShow(200, 0, 200);
+			LEDRing_blink(0, 200, 0, 2);
+			LEDRing_clear(); 
+			LEDRing_ready = 1;
 			return 1;
+
+		case Number_of_LEDRing_programs :
+			LEDRing_ready = 1;
+			return 0;
+
+		case NONE :
+			LEDRing_ready = 1;
+			return 0;
 	}
 
+	LEDRing_ready = 1;
 	return 0;
 }
 

@@ -91,7 +91,7 @@ esp_err_t MotorControl_initialize()
     // Set configuration of timer0 for high speed channels
     err_state = ledc_timer_config(&ledc_timer_motors);
 
-    // Set LED Controller with previously prepared configuration
+    // Set Controller with previously prepared configuration
     for (int ch = 0; ch < LEDC_CH_NUM; ch++) {
         err_state = ledc_channel_config(&ledc_channel_motors[ch]);
     }
@@ -134,8 +134,8 @@ void PrintBuffer2(uint8_t *rx_buffer)
 void RunMotors(uint8_t motor_params[8])
 {
     PrintBuffer2(motor_params);
-    RunSingleMotor(0, motor_params[0], motor_params[1]);
-    RunSingleMotor(1, motor_params[2], motor_params[3]);
-    RunSingleMotor(2, motor_params[4], motor_params[5]);
-    RunSingleMotor(3, motor_params[6], motor_params[7]);
+    RunSingleMotor(0, motor_params[0], motor_params[1]); // Motor 1 (Down-Right) TODO check
+    RunSingleMotor(1, motor_params[2], motor_params[3]); // Motor 2 (Down-Left)
+    RunSingleMotor(2, motor_params[4], motor_params[5]); // Motor 3 (Up-Right)
+    RunSingleMotor(3, motor_params[6], motor_params[7]); // Motor 4 (Up-Left)
 }
