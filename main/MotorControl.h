@@ -29,5 +29,3 @@
 
 esp_err_t MotorControl_initialize();
 void RunMotors(uint8_t motor_params[8]);
-
-// TODO add defines that make sense -- per motor and direction and then put in config pin bindings

@@ -12,7 +12,6 @@ static ledc_channel_config_t ledc_conf;
 uint8_t current_tilt = 0;
 uint8_t current_extension = 0;
 
-// TODO fix angle calculations
 uint32_t calculate_duty(uint8_t angle)
 {
     float duty = SERVO_MIN_PULSEWIDTH + ( (SERVO_MAX_PULSEWIDTH - SERVO_MIN_PULSEWIDTH)/SERVO_MAX_DEGREE ) * angle;

@@ -11,17 +11,6 @@
 static esp_adc_cal_characteristics_t *adc_chars;
 #if CONFIG_IDF_TARGET_ESP32
 
-/*
-ADC1 channel 0 is GPIO36
-ADC1 channel 1 is GPIO37
-ADC1 channel 2 is GPIO38
-ADC1 channel 3 is GPIO39
-ADC1 channel 4 is GPIO32
-ADC1 channel 5 is GPIO33
-ADC1 channel 6 is GPIO34
-ADC1 channel 7 is GPIO35
-*/
-
 static const adc_channel_t channel = ADC_CHANNEL_6;     //GPIO34 if ADC1, GPIO14 if ADC2
 static const adc_bits_width_t width = ADC_WIDTH_BIT_12;
 

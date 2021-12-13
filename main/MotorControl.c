@@ -133,7 +133,7 @@ void PrintBuffer2(uint8_t *rx_buffer)
 
 void RunMotors(uint8_t motor_params[8])
 {
-    PrintBuffer2(motor_params);
+    //PrintBuffer2(motor_params);
     RunSingleMotor(0, motor_params[0], motor_params[1]); // Motor 1 (Down-Right) TODO check
     RunSingleMotor(1, motor_params[2], motor_params[3]); // Motor 2 (Down-Left)
     RunSingleMotor(2, motor_params[4], motor_params[5]); // Motor 3 (Up-Right)

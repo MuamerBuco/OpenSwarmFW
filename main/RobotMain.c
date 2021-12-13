@@ -199,12 +199,11 @@ void app_main(void)
 
     xTaskCreate(udp_server_task, "udp_server", 4096, (void*)AF_INET, 5, NULL);
 
-    // TODO set esp_err_t returns and check with ESP ERROR
     ESP_ERROR_CHECK(BucketControl_initialize());
     ESP_ERROR_CHECK(MotorControl_initialize());
     ESP_ERROR_CHECK(LEDRing_initialize(0, 32, 24));
 
-    LEDRing_blink(230, 0, 230, 1);
+    LEDRing_blink(200, 0, 0, 1); //blink green
 
     uint32_t alarmCounter = 0;
     uint8_t run_delay = 3;
@@ -231,6 +230,5 @@ void app_main(void)
         }
 
         // run_hardware_test_suit();
-        // msDelay(9999);
     }
 }
