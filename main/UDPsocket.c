@@ -67,17 +67,16 @@ void udp_server_task(void *pvParameters)
         xQueueSend( xQueue, ( void * ) &rx_buffer, ( TickType_t ) 0 );
 
         while (1) {
-
            
             //ESP_LOGI(TAG, "Waiting for data");
             struct sockaddr_in6 source_addr; // Large enough for both IPv4 or IPv6
             socklen_t socklen = sizeof(source_addr);
             int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer), 0, (struct sockaddr *)&source_addr, &socklen);
             
-            printf("Buffer state: \n");
-            for(int i = 0; i < sizeof(rx_buffer); i++){
-                printf(" %d ", rx_buffer[i]);
-            }
+            // printf("Buffer state: \n");
+            // for(int i = 0; i < sizeof(rx_buffer); i++){
+            //     printf(" %d ", rx_buffer[i]);
+            // }
             
             // Error occurred during receiving
             if (len < 0) {

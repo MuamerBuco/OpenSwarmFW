@@ -5,6 +5,8 @@ OpenSwarm Firmware for the ESP32 development board
 
 # Still Under Development....
 
+<img src="https://github.com/MuamerBuco/ThetaSwarm/blob/master/images/IMG_6040_00.png?raw=true" alt="robotImageInternals1" width="200" height="200" align="center">
+
 
 ## Current Features
 
