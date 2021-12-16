@@ -27,6 +27,9 @@ UDP datagrams expected in 12 byte format, with the first byte used for command p
 
 ### Configure the project
 
+The project leverages the ESP IoT Development Framework, for more information visit:
+https://github.com/espressif/esp-idf
+
 ```
 idf.py menuconfig
 ```
