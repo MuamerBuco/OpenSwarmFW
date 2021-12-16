@@ -1,6 +1,6 @@
-# OpenSwarm Firmware v1.0
+# ThetaSwarm Firmware v1.0
 
-OpenSwarm Firmware for the ESP32 development board
+ThetaSwarm Firmware for the ESP32 development board
 
 
 # Still Under Development....
@@ -10,17 +10,16 @@ OpenSwarm Firmware for the ESP32 development board
 
 ## Current Features
 
-- Per wheel motor drive commands
+- Safety auto-shutdown
 - UDP communication with master
+- Automatic signal lighting
 - LED control for WS2812 LED Ring, preprogrammed effects and custom low-level commands
-- 2DOF Bucket commands
-- Regular battery checks
+- 2DOF Bucket control
 
 ## Coming Soon
 
 - Two-way communication
-- Automatic signal lighting
-- Low-battery notifications
+- Low-battery signal
 
 ## Communication Format
 
